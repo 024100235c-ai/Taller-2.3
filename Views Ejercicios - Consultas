@@ -1,0 +1,54 @@
+-- =========================
+-- vistas ejercicios
+-- =========================
+
+-- 5.1
+create view v_medico_especialidad as
+select m.codm, m.nombresm, m.paternom, m.maternom,
+       e.codesp, e.nombreesp, edm.fechaobtencion
+from tmedico m
+join tespecialidaddelmedico edm on m.codm = edm.codm
+join tespecialidad e on edm.codesp = e.codesp;
+
+select * from v_medico_especialidad;
+
+-- 5.4
+create view v_enfermedades_no_detectadas as
+select *
+from tenfermedad
+where code not in (select code from tenfermedadeneldiagnostico);
+
+select * from v_enfermedades_no_detectadas;
+
+-- 5.5
+create view v_especialidades_sin_medico as
+select *
+from tespecialidad
+where codesp not in (select codesp from tespecialidaddelmedico);
+
+select * from v_especialidades_sin_medico;
+
+-- 5.7
+create view v_pacientes_sin_enfermedad as
+select p.codp, p.nombresp, p.paternop, p.maternop,
+       d.codd, d.descripciond
+from tpaciente p
+join tdiagnostico d on p.codp = d.codp
+where d.codd not in (select codd from tenfermedadeneldiagnostico);
+
+-- consultas 
+
+-- 5.2
+select nombresm, paternom, maternom, count(*) cantidad
+from v_medico_especialidad
+group by nombresm, paternom, maternom;
+
+-- 5.3
+select nombresm, paternom, maternom, count(*) cantidad
+from v_medico_especialidad
+group by nombresm, paternom, maternom
+having count(*) >= 2;
+
+-- 5.6
+select count(*) cantidad
+from v_especialidades_sin_medico;
