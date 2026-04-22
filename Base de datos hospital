@@ -1,0 +1,102 @@
+-- Autor: Joseph Beder Mariño
+-- Fecha: 22/04/25
+
+-- eliminar tablas si existen
+drop table tenfermedadeneldiagnostico cascade constraints;
+drop table tespecialidaddelmedico cascade constraints;
+drop table tdiagnostico cascade constraints;
+drop table tenfermedad cascade constraints;
+drop table tespecialidad cascade constraints;
+drop table tmedico cascade constraints;
+drop table tpaciente cascade constraints;
+
+-- crear tablas
+
+create table tpaciente (
+    codp varchar2(4) primary key,
+    tipodocp varchar2(15),
+    nrodocp varchar2(12),
+    paternop varchar2(50),
+    maternop varchar2(50),
+    nombresp varchar2(50),
+    fechanacimientop date,
+    generop char(1)
+);
+
+create table tmedico (
+    codm varchar2(4) primary key,
+    tipodocm varchar2(15),
+    nrodocm varchar2(12),
+    paternom varchar2(50),
+    maternom varchar2(50),
+    nombresm varchar2(50),
+    celularm varchar2(12),
+    fechanacimientom date,
+    generom char(1)
+);
+
+create table tespecialidad (
+    codesp varchar2(4) primary key,
+    nombreesp varchar2(70),
+    descripcionesp varchar2(100)
+);
+
+create table tenfermedad (
+    code varchar2(4) primary key,
+    nombree varchar2(50),
+    descripcione varchar2(100)
+);
+
+create table tdiagnostico (
+    codd varchar2(4) primary key,
+    fechahorad timestamp,
+    descripciond varchar2(100),
+    codp varchar2(4),
+    codm varchar2(4),
+    foreign key (codp) references tpaciente(codp),
+    foreign key (codm) references tmedico(codm)
+);
+
+create table tespecialidaddelmedico (
+    codespm varchar2(4) primary key,
+    codesp varchar2(4),
+    codm varchar2(4),
+    fechaobtencion date,
+    foreign key (codesp) references tespecialidad(codesp),
+    foreign key (codm) references tmedico(codm)
+);
+
+create table tenfermedadeneldiagnostico (
+    coded varchar2(4) primary key,
+    code varchar2(4),
+    codd varchar2(4),
+    foreign key (code) references tenfermedad(code),
+    foreign key (codd) references tdiagnostico(codd)
+);
+
+-- insertar datos
+
+insert into tpaciente values ('p01','dni','11111111','salas','rivas','juan',date '2000-02-02','m');
+insert into tpaciente values ('p02','dni','22222222','perez','rozas','elena',date '2020-10-01','f');
+
+insert into tmedico values ('m1','dni','33333333','zela','ramirez','javier','999999999',date '1970-10-10','m');
+insert into tmedico values ('m2','carnet','7777','cabral','desousa','alejandra','988888877',date '1975-12-06','f');
+
+insert into tespecialidad values ('esp1','otorrinolaringologia','ojos nariz y boca');
+insert into tespecialidad values ('esp2','pediatria','neonato niño adolescente');
+insert into tespecialidad values ('esp3','cardiologia','corazon sistema circulatorio');
+insert into tespecialidad values ('esp4','odontologia','dientes encias');
+
+insert into tenfermedad values ('e1','alergia respiratoria','alergias sistema respiratorio');
+insert into tenfermedad values ('e2','sinusitis','gripe cronica');
+insert into tenfermedad values ('e3','artritis','enfermedad cronica');
+
+insert into tdiagnostico values ('d1',timestamp '2022-02-25 10:00:00','sinusitis aguda y alergia','p01','m1');
+insert into tdiagnostico values ('d2',timestamp '2022-02-28 12:00:00','niña sana','p02','m2');
+
+insert into tespecialidaddelmedico values ('em1','esp1','m1',date '2010-12-12');
+insert into tespecialidaddelmedico values ('em2','esp2','m2',date '2009-02-02');
+insert into tespecialidaddelmedico values ('em3','esp3','m2',date '2019-11-21');
+
+insert into tenfermedadeneldiagnostico values ('ed1','e1','d1');
+insert into tenfermedadeneldiagnostico values ('ed2','e2','d1');
